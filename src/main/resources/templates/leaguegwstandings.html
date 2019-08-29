@@ -1,0 +1,26 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>League GW Standings</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+	<button onclick="copyResult()">Copy text</button>
+	<ul th:each="data: ${leagueGwStandings}">
+		<li th:text="${data.playerNick}"></li>
+	</ul>
+	
+	<textarea id="copyResultTxt" rows="200" cols="100"><th:block th:text="${leagueName} + '⚽🦁&#013;&#010;' + '*Gameweek ' + ${event} + '*&#013;&#010;' + 'Klasemen poin per Gameweek:'+ '&#013;&#010;&#013;&#010;'"></th:block><th:block th:each="data, iterStat : ${leagueGwStandings}"><th:block th:if="${iterStat.first}" th:text="${data.playerStandingsOrder} + '. ' + ${data.playerNick} + '🏆 ( *' + ${data.playerEventScore} + '* | ' + ${data.playerTotalScore} + ')' + '&#013;&#010;'"></th:block><th:block th:if="${!iterStat.last && !iterStat.first}" th:text="${data.playerStandingsOrder} + '. ' + ${data.playerNick} + ' ( *' + ${data.playerEventScore} + '* | ' + ${data.playerTotalScore} + ')' + '&#013;&#010;'"></th:block><th:block th:if="${iterStat.last}" th:text="${data.playerStandingsOrder} + '. ' + ${data.playerNick} + '🎉 ( *' + ${data.playerEventScore} + '* | ' + ${data.playerTotalScore} + ')'"></th:block></th:block>
+	</textarea>
+
+	<script>
+		function copyResult() {
+			var copyResultTxt = document.getElementById("copyResultTxt");
+			copyResultTxt.value = copyResultTxt.value.trim();
+			copyResultTxt.select();
+			copyResultTxt.setSelectionRange(0, 99999)
+			document.execCommand("copy");
+		}
+	</script>
+</body>
+</html>

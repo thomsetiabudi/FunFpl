@@ -1,0 +1,12 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Select League</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+	<ul th:each="league: ${leagueList}">
+		<li><a th:href="'/view/availableGwStandings?leagueid=' + ${league.id}" th:text="${league.name}"></a></li>
+	</ul>
+</body>
+</html>
