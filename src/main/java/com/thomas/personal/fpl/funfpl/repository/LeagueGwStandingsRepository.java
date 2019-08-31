@@ -23,4 +23,37 @@ public interface LeagueGwStandingsRepository extends CrudRepository<TblLeagueGwS
 	List<TblLeagueGwStandings> findByLeagueIdAndEventIdAndPlayerIsGwStandingsLastPosOrderByPlayerGwStandingsOrderDesc(
 			Long leagueid, Long event, boolean playerIsGwStandingsLastPos);
 
+	List<TblLeagueGwStandings> findTop2ByLeagueIdAndEventIdOrderByPlayerOverallStandingsOrderAsc(Long leagueid,
+			Long event);
+
+	List<TblLeagueGwStandings> findTop3ByLeagueIdAndEventIdOrderByPlayerGwStandingsRankPositionGainDesc(Long leagueid,
+			Long event);
+
+	List<TblLeagueGwStandings> findTop3ByLeagueIdAndEventIdOrderByPlayerOverallStandingsPositionGainDesc(Long leagueid,
+			Long event);
+
+	List<TblLeagueGwStandings> findByLeagueIdAndEventIdAndPlayerGwTransferCountStandingsRankOrderByPlayerGwTransferCountStandingsOrderAsc(
+			Long leagueid, Long event, int playerGwTransferCountStandingsRank);
+
+	List<TblLeagueGwStandings> findByLeagueIdAndEventIdAndPlayerGwTransferCostStandingsRankOrderByPlayerGwTransferCostStandingsOrderAsc(
+			Long leagueid, Long event, int playerGwTransferCostStandingsRank);
+
+	List<TblLeagueGwStandings> findTop3ByLeagueIdAndEventIdOrderByPlayerOverallTransferCostStandingsOrderAsc(
+			Long leagueid, Long event);
+
+	List<TblLeagueGwStandings> findTop3ByLeagueIdAndEventIdOrderByPlayerOverallTransferCountStandingsOrderAsc(
+			Long leagueid, Long event);
+
+	List<TblLeagueGwStandings> findTop3ByLeagueIdAndEventIdOrderByPlayerOverallBenchPointStandingsOrderAsc(
+			Long leagueid, Long event);
+
+	List<TblLeagueGwStandings> findByLeagueIdAndEventIdAndPlayerGwBankValueStandingsRankOrderByPlayerGwBankValueStandingsOrderAsc(
+			Long leagueid, Long event, int playerGwBankValueStandingsRank);
+
+	List<TblLeagueGwStandings> findByLeagueIdAndEventIdAndPlayerGwTeamValueStandingsRankOrderByPlayerGwTeamValueStandingsOrderAsc(
+			Long leagueid, Long event, int playerGwTeamValueStandingsRank);
+
+	List<TblLeagueGwStandings> findByLeagueIdAndEventIdAndPlayerGwBenchPointStandingsRankOrderByPlayerGwBenchPointStandingsOrderAsc(
+			Long leagueid, Long event, int playerGwBenchPointStandingsRank);
+
 }
