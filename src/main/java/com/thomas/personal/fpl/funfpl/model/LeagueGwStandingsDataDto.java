@@ -31,6 +31,8 @@ public class LeagueGwStandingsDataDto {
 	private Integer playerRankGain;
 	
 	private Boolean playerIsLastGwStandingsRank;
+	
+	private String activeChip;
 
 	public Long getLeagueId() {
 		return leagueId;
@@ -150,6 +152,14 @@ public class LeagueGwStandingsDataDto {
 
 	public void setPlayerIsLastGwStandingsRank(Boolean playerIsLastGwStandingsRank) {
 		this.playerIsLastGwStandingsRank = playerIsLastGwStandingsRank;
+	}
+
+	public String getActiveChip() {
+		return activeChip;
+	}
+
+	public void setActiveChip(String activeChip) {
+		this.activeChip = activeChip;
 	}	
 	
 }
