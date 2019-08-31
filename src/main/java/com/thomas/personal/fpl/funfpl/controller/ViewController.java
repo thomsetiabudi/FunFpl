@@ -49,6 +49,7 @@ public class ViewController {
 		}
 		
 		model.addAttribute("leagueName", leagueStandingsData.get(0).getLeagueName());
+		model.addAttribute("leagueGwPointRankCopyText", dataViewBl.createLeagueGwPointRankCopyText(leagueStandingsData, event));
 		
 		return "leaguegwstandings";
 	}

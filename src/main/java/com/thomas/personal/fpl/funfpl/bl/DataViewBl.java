@@ -104,11 +104,66 @@ public class DataViewBl {
 			leagueGwStandingData.setPlayerPrevStandingsOrder(tblLeagueGwStandings.getPlayerPrevGwStandingsOrder());
 			leagueGwStandingData.setPlayerStandingsOrder(tblLeagueGwStandings.getPlayerGwStandingsOrder());
 			leagueGwStandingData.setPlayerTotalScore(tblLeagueGwStandings.getPlayerTotalScore());
+			
+			leagueGwStandingData.setPlayerStandingsRank(tblLeagueGwStandings.getPlayerGwStandingsRank());
+			leagueGwStandingData.setPlayerPrevStandingsRank(tblLeagueGwStandings.getPlayerPrevGwStandingsRank());
+			leagueGwStandingData.setPlayerRankGain(tblLeagueGwStandings.getPlayerGwStandingsRankPositionGain());
+			
+			leagueGwStandingData.setPlayerIsLastGwStandingsRank(tblLeagueGwStandings.getPlayerIsGwStandingsLastPos());
 
 			result.add(leagueGwStandingData);
 		}
 
 		return result;
+	}
+
+	public String createLeagueGwPointRankCopyText(List<LeagueGwStandingsDataDto> leagueStandingsData, Long event) {
+//		String lineBreak = "&#013;&#010;";
+		String lineBreak = "\r\n";
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append(leagueStandingsData.get(0).getLeagueName());
+		sb.append("⚽🦁");
+		sb.append(lineBreak);
+		
+		sb.append("*Gameweek ");
+		sb.append(event);
+		sb.append("*");
+		sb.append(lineBreak);
+		
+		sb.append("Klasemen poin per Gameweek:");
+		sb.append(lineBreak);
+		sb.append(lineBreak);
+		
+		for (Integer index = 0; index < leagueStandingsData.size(); index++) {
+			LeagueGwStandingsDataDto data = leagueStandingsData.get(index);
+			
+			sb.append(data.getPlayerStandingsOrder());
+			sb.append(" ( *");
+			sb.append(data.getPlayerStandingsRank());
+			sb.append("* ) ");
+//			sb.append(". ");
+			sb.append(data.getPlayerNick());
+			
+			if(data.getPlayerStandingsRank().equals(1)) {
+				sb.append(" 🏆");
+			} else if (data.getPlayerStandingsRank().equals(2)) {
+				sb.append(" 🥈");
+			}
+			
+			if (data.getPlayerIsLastGwStandingsRank() != null && data.getPlayerIsLastGwStandingsRank()) {
+				sb.append(" 🎉");
+			}
+			
+			sb.append(" ( *");
+			sb.append(data.getPlayerEventScore());
+			sb.append("* | ");
+			sb.append(data.getPlayerTotalScore());
+			sb.append(")");
+			sb.append(lineBreak);
+		}
+		
+		return sb.toString();
 	}
 
 }

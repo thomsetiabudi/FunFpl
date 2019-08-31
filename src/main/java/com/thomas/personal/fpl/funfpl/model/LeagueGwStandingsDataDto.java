@@ -23,6 +23,14 @@ public class LeagueGwStandingsDataDto {
 	private Integer playerPrevStandingsOrder;
 	
 	private Integer playerPositionGain;
+	
+	private Integer playerStandingsRank;
+	
+	private Integer playerPrevStandingsRank;
+	
+	private Integer playerRankGain;
+	
+	private Boolean playerIsLastGwStandingsRank;
 
 	public Long getLeagueId() {
 		return leagueId;
@@ -111,6 +119,37 @@ public class LeagueGwStandingsDataDto {
 	public void setPlayerNick(String playerNick) {
 		this.playerNick = playerNick;
 	}
-	
+
+	public Integer getPlayerStandingsRank() {
+		return playerStandingsRank;
+	}
+
+	public void setPlayerStandingsRank(Integer playerStandingsRank) {
+		this.playerStandingsRank = playerStandingsRank;
+	}
+
+	public Integer getPlayerPrevStandingsRank() {
+		return playerPrevStandingsRank;
+	}
+
+	public void setPlayerPrevStandingsRank(Integer playerPrevStandingsRank) {
+		this.playerPrevStandingsRank = playerPrevStandingsRank;
+	}
+
+	public Integer getPlayerRankGain() {
+		return playerRankGain;
+	}
+
+	public void setPlayerRankGain(Integer playerRankGain) {
+		this.playerRankGain = playerRankGain;
+	}
+
+	public Boolean getPlayerIsLastGwStandingsRank() {
+		return playerIsLastGwStandingsRank;
+	}
+
+	public void setPlayerIsLastGwStandingsRank(Boolean playerIsLastGwStandingsRank) {
+		this.playerIsLastGwStandingsRank = playerIsLastGwStandingsRank;
+	}	
 	
 }
