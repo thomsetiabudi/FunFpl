@@ -285,7 +285,7 @@ public class DataViewBl {
 				}
 
 				if (data.getPlayerGwTeamValueStandingsRank().equals(1)) {
-					sb.append(" 🏆");
+					sb.append(" 😎💰");
 				}
 
 				sb.append(" ( *£");
@@ -319,7 +319,7 @@ public class DataViewBl {
 				}
 
 				if (data.getPlayerGwBankValueStandingsRank().equals(1)) {
-					sb.append(" 🏆");
+					sb.append(" 🏦💶");
 				}
 
 				sb.append(" ( *£");
@@ -354,7 +354,7 @@ public class DataViewBl {
 				}
 
 				if (orderNumber.equals(1)) {
-					sb.append(" 🏆");
+					sb.append(" 😅");
 				}
 
 				sb.append(" ( *");
@@ -391,7 +391,7 @@ public class DataViewBl {
 				}
 
 				if (data.getPlayerGwBenchPointStandingsRank().equals(1)) {
-					sb.append(" 🏆");
+					sb.append(" 😅");
 				}
 
 				sb.append(" ( *");
@@ -426,7 +426,7 @@ public class DataViewBl {
 				}
 
 				if (orderNumber.equals(1)) {
-					sb.append(" 🏆");
+					sb.append(" 💸");
 				}
 
 				sb.append(" (");
@@ -465,7 +465,7 @@ public class DataViewBl {
 				}
 
 				if (data.getPlayerGwTransferCostStandingsRank().equals(1)) {
-					sb.append(" 🏆");
+					sb.append(" 💸");
 				}
 
 				sb.append(" (");
@@ -502,7 +502,7 @@ public class DataViewBl {
 				}
 
 				if (orderNumber.equals(1)) {
-					sb.append(" 🏆");
+					sb.append(" 😎");
 				}
 
 				sb.append(" ( *");
@@ -539,7 +539,7 @@ public class DataViewBl {
 				}
 
 				if (data.getPlayerGwTransferCountStandingsRank().equals(1)) {
-					sb.append(" 🏆");
+					sb.append(" 😎");
 				}
 
 				sb.append(" ( *");
@@ -578,18 +578,16 @@ public class DataViewBl {
 					sb.append(player.getPlayerNick());
 				}
 
-				sb.append(" 🏆 ");
+				sb.append(" ⬆ *");
 				sb.append(data.getPlayerOverallStandingsPositionGain());
-				sb.append(" pos (pos ");
+				sb.append("* pos (pos ");
 				sb.append(data.getPlayerOverallStandingsOrder());
-				sb.append(", was *");
+				sb.append(", was ");
 				sb.append(data.getPlayerPrevOverallStandingsOrder());
 
 				if (data.getPlayerActiveChip() != null) {
-					sb.append("* | ");
+					sb.append(" | ");
 					sb.append(data.getPlayerActiveChip());
-				} else {
-					sb.append("*");
 				}
 
 				sb.append(")");
@@ -619,18 +617,16 @@ public class DataViewBl {
 					sb.append(player.getPlayerNick());
 				}
 
-				sb.append(" 🏆 ");
+				sb.append(" ⬆ *");
 				sb.append(data.getPlayerGwStandingsRankPositionGain());
-				sb.append(" pos (pos ");
+				sb.append("* pos (pos ");
 				sb.append(data.getPlayerGwStandingsRank());
-				sb.append(", was *");
+				sb.append(", was ");
 				sb.append(data.getPlayerPrevGwStandingsRank());
 
 				if (data.getPlayerActiveChip() != null) {
-					sb.append("* | ");
+					sb.append(" | ");
 					sb.append(data.getPlayerActiveChip());
-				} else {
-					sb.append("*");
 				}
 
 				sb.append(")");
