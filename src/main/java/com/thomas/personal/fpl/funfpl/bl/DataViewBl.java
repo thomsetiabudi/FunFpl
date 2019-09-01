@@ -684,9 +684,9 @@ public class DataViewBl {
 		if (!standings.isEmpty()) {
 			for (TblLeagueGwStandings data : standings) {
 				sb.append(data.getPlayerGwStandingsOrder());
-				sb.append(" ( *");
+				sb.append(" (");
 				sb.append(data.getPlayerGwStandingsRank());
-				sb.append("* ) ");
+				sb.append(") ");
 				TblPlayer player = playerMap.get(data.getPlayerEntryId());
 				if (player != null) {
 					sb.append(player.getPlayerNick());
