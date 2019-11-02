@@ -91,10 +91,6 @@ public class DataBl {
 		Boolean isEventFinish = true;
 		Long lastFinishedEvent = null;
 
-//		if (!"Updated".equalsIgnoreCase(response.getBody().getLeagues())) {
-//			return;
-//		}
-
 		for (EventStatusDetailDto eventStatusDetail : response.getBody().getStatus()) {
 			if (!eventStatusDetail.getBonusAdded() || !"r".equalsIgnoreCase(eventStatusDetail.getPoints())) {
 				isEventFinish = false;

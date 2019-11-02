@@ -124,8 +124,6 @@ public class DataViewBl {
 	}
 
 	public String createLeagueGwPointRankCopyText(List<LeagueGwStandingsDataDto> leagueStandingsData, Long event) {
-//		String LINE_BREAK = "&#013;&#010;";
-
 		StringBuilder sb = new StringBuilder();
 
 		sb.append(leagueStandingsData.get(0).getLeagueName());
@@ -186,7 +184,6 @@ public class DataViewBl {
 			playerMap.put(player.getId(), player);
 		}
 
-		String LINE_BREAK = "\r\n";
 		StringBuilder sb = new StringBuilder();
 
 		sb.append(leagueStandingsData.get(0).getLeagueName());
@@ -639,7 +636,7 @@ public class DataViewBl {
 
 	private void createLeagueLeaderString(StringBuilder sb, Map<Long, TblPlayer> playerMap, Long event, Long leagueid) {
 		List<TblLeagueGwStandings> standings = leagueGwStandingsRepository
-				.findTop2ByLeagueIdAndEventIdOrderByPlayerOverallStandingsOrderAsc(leagueid, event);
+				.findTop5ByLeagueIdAndEventIdOrderByPlayerOverallStandingsOrderAsc(leagueid, event);
 
 		if (!standings.isEmpty()) {
 			for (TblLeagueGwStandings data : standings) {
@@ -751,5 +748,68 @@ public class DataViewBl {
 			}
 		}
 	}
+
+	public String createLeagueLeaguePointRankCopyText(Long event, Long leagueId) {
+		Optional<TblLeague> league = leagueRepository.findById(leagueId);
+
+		if (!league.isPresent()) {
+			return "";
+		}
+		
+		List<TblLeagueGwStandings> leagueGwStandingsList = leagueGwStandingsRepository
+				.findByLeagueIdAndEventIdOrderByPlayerOverallStandingsOrderAsc(leagueId, event);
+		
+		StringBuilder sb = new StringBuilder();
+
+		sb.append(league.get().getName());
+		sb.append("⚽🦁");
+		sb.append(LINE_BREAK);
+
+		sb.append("*Gameweek ");
+		sb.append(event);
+		sb.append("*");
+		sb.append(LINE_BREAK);
+
+		sb.append("Klasemen Liga:");
+		sb.append(LINE_BREAK);
+		sb.append(LINE_BREAK);
+
+		for (Integer index = 0; index < leagueGwStandingsList.size(); index++) {
+			TblLeagueGwStandings data = leagueGwStandingsList.get(index);
+			
+			Optional<TblPlayer> player = playerRepository.findById(data.getPlayerEntryId());
+			if (!player.isPresent()) {
+				continue;
+			}
+
+			sb.append(data.getPlayerOverallStandingsOrder());
+			sb.append(" ");
+			sb.append(player.get().getPlayerNick());
+
+			if (data.getPlayerOverallStandingsOrder().equals(1)) {
+				sb.append(" 🏆");
+			} else if (data.getPlayerOverallStandingsOrder().equals(2)) {
+				sb.append(" 🥈");
+			}
+
+			sb.append(" ( ");
+			sb.append(data.getPlayerEventScore());
+			sb.append(" | *");
+			sb.append(data.getPlayerTotalScore());
+			sb.append("*");
+
+			if (data.getPlayerActiveChip() != null) {
+				sb.append(" | ");
+				sb.append(data.getPlayerActiveChip());
+			}
+
+			sb.append(")");
+			sb.append(LINE_BREAK);
+		}
+
+		return sb.toString();
+	}
+
+
 
 }

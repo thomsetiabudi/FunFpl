@@ -7,12 +7,11 @@
 <body>
 	<button onclick="copyResult('copyGwSummaryTxt')" style="display:block;margin-bottom: 10px;">Copy GW Summary</button>
 	<button onclick="copyResult('copyGwStandingsTxt')" style="display:block;margin-bottom: 10px;">Copy GW Standings</button>
-<!-- 	<ul th:each="data: ${leagueGwStandings}"> -->
-<!-- 		<li th:text="${data.playerNick}"></li> -->
-<!-- 	</ul> -->
+	<button onclick="copyResult('copyLeagueStandingsTxt')" style="display:block;margin-bottom: 10px;">Copy League Standings</button>
 	
 	<textarea id="copyGwSummaryTxt" rows="15" cols="100"><th:block th:text="${leagueGwSummaryCopyText}"></th:block></textarea>
 	<textarea id="copyGwStandingsTxt" rows="15" cols="100"><th:block th:text="${leagueGwPointRankCopyText}"></th:block></textarea>
+	<textarea id="copyLeagueStandingsTxt" rows="15" cols="100"><th:block th:text="${leagueLeaguePointRankCopyText}"></th:block></textarea>
 
 	<script>
 		function copyResult(elementId) {
