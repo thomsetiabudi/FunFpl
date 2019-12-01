@@ -8,5 +8,9 @@
     <ul th:each="gw: ${availableGwStandings}">
 		<li><a th:href="'/view/leaguegwstandings?leagueid=' + ${leagueid} + '&event=' + ${gw}" th:text="'GW ' + ${gw}"></a></li>
 	</ul>
+	
+	<p>
+		<a th:href="'/view/csv/availableGwStandings?leagueid=' + ${leagueid}" th:text="'Download CSV Data'"></a>
+	</p>
 </body>
 </html>

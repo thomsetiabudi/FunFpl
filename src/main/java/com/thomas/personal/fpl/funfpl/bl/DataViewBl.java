@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.thomas.personal.fpl.funfpl.model.LeagueDto;
+import com.thomas.personal.fpl.funfpl.model.LeagueGwStandingsDataDownloadDto;
 import com.thomas.personal.fpl.funfpl.model.LeagueGwStandingsDataDto;
 import com.thomas.personal.fpl.funfpl.persistence.TblEvent;
 import com.thomas.personal.fpl.funfpl.persistence.TblLeague;
@@ -375,8 +376,8 @@ public class DataViewBl {
 	private void createMostPointOnBenchGwString(StringBuilder sb, Map<Long, TblPlayer> playerMap, Long event,
 			Long leagueid) {
 		List<TblLeagueGwStandings> standings = leagueGwStandingsRepository
-				.findByLeagueIdAndEventIdAndPlayerGwBenchPointStandingsRankOrderByPlayerGwBenchPointStandingsOrderAsc(leagueid, event,
-						1);
+				.findByLeagueIdAndEventIdAndPlayerGwBenchPointStandingsRankOrderByPlayerGwBenchPointStandingsOrderAsc(
+						leagueid, event, 1);
 
 		if (!standings.isEmpty()) {
 			for (TblLeagueGwStandings data : standings) {
@@ -449,8 +450,8 @@ public class DataViewBl {
 	private void createMostTransferCostGwString(StringBuilder sb, Map<Long, TblPlayer> playerMap, Long event,
 			Long leagueid) {
 		List<TblLeagueGwStandings> standings = leagueGwStandingsRepository
-				.findByLeagueIdAndEventIdAndPlayerGwTransferCostStandingsRankOrderByPlayerGwTransferCostStandingsOrderAsc(leagueid,
-						event, 1);
+				.findByLeagueIdAndEventIdAndPlayerGwTransferCostStandingsRankOrderByPlayerGwTransferCostStandingsOrderAsc(
+						leagueid, event, 1);
 
 		if (!standings.isEmpty()) {
 			for (TblLeagueGwStandings data : standings) {
@@ -523,8 +524,8 @@ public class DataViewBl {
 	private void createMostTransferGwString(StringBuilder sb, Map<Long, TblPlayer> playerMap, Long event,
 			Long leagueid) {
 		List<TblLeagueGwStandings> standings = leagueGwStandingsRepository
-				.findByLeagueIdAndEventIdAndPlayerGwTransferCountStandingsRankOrderByPlayerGwTransferCountStandingsOrderAsc(leagueid,
-						event, 1);
+				.findByLeagueIdAndEventIdAndPlayerGwTransferCountStandingsRankOrderByPlayerGwTransferCountStandingsOrderAsc(
+						leagueid, event, 1);
 
 		if (!standings.isEmpty()) {
 			for (TblLeagueGwStandings data : standings) {
@@ -755,10 +756,10 @@ public class DataViewBl {
 		if (!league.isPresent()) {
 			return "";
 		}
-		
+
 		List<TblLeagueGwStandings> leagueGwStandingsList = leagueGwStandingsRepository
 				.findByLeagueIdAndEventIdOrderByPlayerOverallStandingsOrderAsc(leagueId, event);
-		
+
 		StringBuilder sb = new StringBuilder();
 
 		sb.append(league.get().getName());
@@ -776,7 +777,7 @@ public class DataViewBl {
 
 		for (Integer index = 0; index < leagueGwStandingsList.size(); index++) {
 			TblLeagueGwStandings data = leagueGwStandingsList.get(index);
-			
+
 			Optional<TblPlayer> player = playerRepository.findById(data.getPlayerEntryId());
 			if (!player.isPresent()) {
 				continue;
@@ -810,6 +811,131 @@ public class DataViewBl {
 		return sb.toString();
 	}
 
+	public List<LeagueGwStandingsDataDownloadDto> getLeagueGwStandingsDownload(Long event, Long leagueid) {
+		List<LeagueGwStandingsDataDownloadDto> result = new ArrayList<>();
 
+		List<TblLeagueGwStandings> leagueGwStandingDataList = leagueGwStandingsRepository
+				.findByLeagueIdAndEventIdOrderByPlayerOverallStandingsOrderAsc(leagueid, event);
+
+		if (leagueGwStandingDataList == null || leagueGwStandingDataList.isEmpty()) {
+			return result;
+		}
+
+		for (TblLeagueGwStandings leagueGwStandingData : leagueGwStandingDataList) {
+			result.add(mapLeagueGwStandingDataToLeagueGwStandingsDataDownloadDto(leagueGwStandingData));
+		}
+
+		return result;
+	}
+
+	private LeagueGwStandingsDataDownloadDto mapLeagueGwStandingDataToLeagueGwStandingsDataDownloadDto(
+			TblLeagueGwStandings data) {
+		if (data == null) {
+			return null;
+		}
+		Optional<TblPlayer> player = playerRepository.findById(data.getPlayerEntryId());
+
+		if (!player.isPresent()) {
+			return null;
+		}
+
+		LeagueGwStandingsDataDownloadDto result = new LeagueGwStandingsDataDownloadDto();
+
+		result.setEventId(data.getEventId());
+		result.setLeagueGwStandingsId(data.getLeagueGwStandingsId());
+		result.setLeagueId(data.getLeagueId());
+		result.setPlayerActiveChip(data.getPlayerActiveChip());
+		result.setPlayerBank(data.getPlayerBank());
+		result.setPlayerEntryId(data.getPlayerEntryId());
+		result.setPlayerEntryName(player.get().getEntryName());
+		result.setPlayerEventPointsOnBench(data.getPlayerEventPointsOnBench());
+		result.setPlayerEventScore(data.getPlayerEventScore());
+		result.setPlayerEventTransfer(data.getPlayerEventTransfer());
+		result.setPlayerEventTransferCost(data.getPlayerEventTransferCost());
+		result.setPlayerGwBankValueStandingsOrder(data.getPlayerGwBankValueStandingsOrder());
+		result.setPlayerGwBankValueStandingsPositionGain(data.getPlayerGwBankValueStandingsPositionGain());
+		result.setPlayerGwBankValueStandingsRank(data.getPlayerGwBankValueStandingsRank());
+		result.setPlayerGwBankValueStandingsRankPositionGain(data.getPlayerGwBankValueStandingsRankPositionGain());
+		result.setPlayerGwBenchPointStandingsOrder(data.getPlayerGwBenchPointStandingsOrder());
+		result.setPlayerGwBenchPointStandingsPositionGain(data.getPlayerGwBenchPointStandingsPositionGain());
+		result.setPlayerGwBenchPointStandingsRank(data.getPlayerGwBenchPointStandingsRank());
+		result.setPlayerGwBenchPointStandingsRankPositionGain(data.getPlayerGwBenchPointStandingsRankPositionGain());
+		result.setPlayerGwStandingsOrder(data.getPlayerGwStandingsOrder());
+		result.setPlayerGwStandingsPositionGain(data.getPlayerGwStandingsPositionGain());
+		result.setPlayerGwStandingsRank(data.getPlayerGwStandingsRank());
+		result.setPlayerGwStandingsRankPositionGain(data.getPlayerGwStandingsRankPositionGain());
+		result.setPlayerGwTeamValueStandingsOrder(data.getPlayerGwTeamValueStandingsOrder());
+		result.setPlayerGwTeamValueStandingsPositionGain(data.getPlayerGwTeamValueStandingsPositionGain());
+		result.setPlayerGwTeamValueStandingsRank(data.getPlayerGwTeamValueStandingsRank());
+		result.setPlayerGwTeamValueStandingsRankPositionGain(data.getPlayerGwTeamValueStandingsRankPositionGain());
+		result.setPlayerGwTransferCostStandingsOrder(data.getPlayerGwTransferCostStandingsOrder());
+		result.setPlayerGwTransferCostStandingsPositionGain(data.getPlayerGwTransferCostStandingsPositionGain());
+		result.setPlayerGwTransferCostStandingsRank(data.getPlayerGwTransferCostStandingsRank());
+		result.setPlayerGwTransferCostStandingsRankPositionGain(
+				data.getPlayerGwTransferCostStandingsRankPositionGain());
+		result.setPlayerGwTransferCountStandingsOrder(data.getPlayerGwTransferCountStandingsOrder());
+		result.setPlayerGwTransferCountStandingsPositionGain(data.getPlayerGwTransferCountStandingsPositionGain());
+		result.setPlayerGwTransferCountStandingsRank(data.getPlayerGwTransferCountStandingsRank());
+		result.setPlayerGwTransferCountStandingsRankPositionGain(
+				data.getPlayerGwTransferCountStandingsRankPositionGain());
+		result.setPlayerIsGwBankValueStandingsLastPos(data.getPlayerIsGwBankValueStandingsLastPos());
+		result.setPlayerIsGwBenchPointStandingsLastPos(data.getPlayerIsGwBenchPointStandingsLastPos());
+		result.setPlayerIsGwStandingsLastPos(data.getPlayerIsGwStandingsLastPos());
+		result.setPlayerIsGwTeamValueStandingsLastPos(data.getPlayerIsGwTeamValueStandingsLastPos());
+		result.setPlayerIsGwTransferCostStandingsLastPos(data.getPlayerIsGwTransferCostStandingsLastPos());
+		result.setPlayerIsGwTransferCountStandingsLastPos(data.getPlayerIsGwTransferCountStandingsLastPos());
+		result.setPlayerName(player.get().getPlayerName());
+		result.setPlayerNick(player.get().getPlayerNick());
+		result.setPlayerOverallBenchPointStandingsOrder(data.getPlayerOverallBenchPointStandingsOrder());
+		result.setPlayerOverallBenchPointStandingsPositionGain(data.getPlayerOverallBenchPointStandingsPositionGain());
+		result.setPlayerOverallStandingsOrder(data.getPlayerOverallStandingsOrder());
+		result.setPlayerOverallStandingsPositionGain(data.getPlayerOverallStandingsPositionGain());
+		result.setPlayerOverallTransferCostStandingsOrder(data.getPlayerOverallTransferCostStandingsOrder());
+		result.setPlayerOverallTransferCostStandingsPositionGain(
+				data.getPlayerOverallTransferCostStandingsPositionGain());
+		result.setPlayerOverallTransferCountStandingsOrder(data.getPlayerOverallTransferCountStandingsOrder());
+		result.setPlayerOverallTransferCountStandingsPositionGain(
+				data.getPlayerOverallTransferCountStandingsPositionGain());
+		result.setPlayerPrevGwBankValueStandingsOrder(data.getPlayerPrevGwBankValueStandingsOrder());
+		result.setPlayerPrevGwBankValueStandingsRank(data.getPlayerPrevGwBankValueStandingsRank());
+		result.setPlayerPrevGwBenchPointStandingsOrder(data.getPlayerPrevGwBenchPointStandingsOrder());
+		result.setPlayerPrevGwBenchPointStandingsRank(data.getPlayerPrevGwBenchPointStandingsRank());
+		result.setPlayerPrevGwStandingsOrder(data.getPlayerPrevGwStandingsOrder());
+		result.setPlayerPrevGwStandingsRank(data.getPlayerPrevGwStandingsRank());
+		result.setPlayerPrevGwTeamValueStandingsOrder(data.getPlayerPrevGwTeamValueStandingsOrder());
+		result.setPlayerPrevGwTeamValueStandingsRank(data.getPlayerPrevGwTeamValueStandingsRank());
+		result.setPlayerPrevGwTransferCostStandingsOrder(data.getPlayerPrevGwTransferCostStandingsOrder());
+		result.setPlayerPrevGwTransferCostStandingsRank(data.getPlayerPrevGwTransferCostStandingsRank());
+		result.setPlayerPrevGwTransferCountStandingsOrder(data.getPlayerPrevGwTransferCountStandingsOrder());
+		result.setPlayerPrevGwTransferCountStandingsRank(data.getPlayerPrevGwTransferCountStandingsRank());
+		result.setPlayerPrevOverallBenchPointStandingsOrder(data.getPlayerPrevOverallBenchPointStandingsOrder());
+		result.setPlayerPrevOverallStandingsOrder(data.getPlayerPrevOverallStandingsOrder());
+		result.setPlayerPrevOverallTransferCostStandingsOrder(data.getPlayerPrevOverallTransferCostStandingsOrder());
+		result.setPlayerPrevOverallTransferCountStandingsOrder(data.getPlayerPrevOverallTransferCountStandingsOrder());
+		result.setPlayerTotalPointsOnBench(data.getPlayerTotalPointsOnBench());
+		result.setPlayerTotalScore(data.getPlayerTotalScore());
+		result.setPlayerTotalTransfer(data.getPlayerTotalTransfer());
+		result.setPlayerTotalTransferCost(data.getPlayerTotalTransferCost());
+		result.setPlayerValue(data.getPlayerValue());
+
+		return result;
+	}
+
+	public List<LeagueGwStandingsDataDownloadDto> getAvailableLeagueGwStandingsDownload(Long leagueid) {
+		List<LeagueGwStandingsDataDownloadDto> result = new ArrayList<>();
+
+		List<TblLeagueGwStandings> leagueGwStandingDataList = leagueGwStandingsRepository
+				.findByLeagueIdOrderByEventIdAsc(leagueid);
+
+		if (leagueGwStandingDataList == null || leagueGwStandingDataList.isEmpty()) {
+			return result;
+		}
+
+		for (TblLeagueGwStandings leagueGwStandingData : leagueGwStandingDataList) {
+			result.add(mapLeagueGwStandingDataToLeagueGwStandingsDataDownloadDto(leagueGwStandingData));
+		}
+
+		return result;
+	}
 
 }

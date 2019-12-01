@@ -100,7 +100,12 @@ public class DataBl {
 			lastFinishedEvent = eventStatusDetail.getEvent();
 		}
 
-		if (!isEventFinish || lastFinishedEvent == null) {
+		if (!isEventFinish && lastFinishedEvent != null)
+		{
+			lastFinishedEvent = lastFinishedEvent - 1;
+		}
+		
+		if (!isEventFinish && lastFinishedEvent == null) {
 			return;
 		}
 
