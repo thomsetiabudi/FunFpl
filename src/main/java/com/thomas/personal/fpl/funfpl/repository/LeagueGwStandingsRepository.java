@@ -79,13 +79,15 @@ public interface LeagueGwStandingsRepository extends CrudRepository<TblLeagueGwS
 
 	@Query("SELECT L.eventId FROM TblLeagueGwStandings L "
 			+ "WHERE L.playerEntryId = ?1 AND L.leagueId = ?2 AND L.eventId <= ?3 "
-			+ "AND L.playerGwStandingsRank = ?4 ")
+			+ "AND L.playerGwStandingsRank = ?4 "
+			+ "ORDER BY L.eventId ")
 	List<Long> getEventIdListByPlayerEntryIdAndLeagueIdAndMaxEventIdAndPlayerGwStandingsRank(Long playerEntryId, Long leagueid,
 			Long event, Integer playerGwStandingsRank);
 
 	@Query("SELECT L.eventId FROM TblLeagueGwStandings L "
 			+ "WHERE L.playerEntryId = ?1 AND L.leagueId = ?2 AND L.eventId <= ?3 "
-			+ "AND L.playerIsGwStandingsLastPos = ?4 ")
+			+ "AND L.playerIsGwStandingsLastPos = ?4 "
+			+ "ORDER BY L.eventId ")
 	List<Long> getEventIdListByPlayerEntryIdAndLeagueIdAndMaxEventIdAndPlayerIsGwStandingsLastPos(Long id,
 			Long leagueid, Long event, Boolean playerIsGwStandingsLastPos);
 
