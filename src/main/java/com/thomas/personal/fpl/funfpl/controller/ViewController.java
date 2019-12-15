@@ -107,4 +107,16 @@ public class ViewController {
 		// write all users to csv file
 		writer.write(dataViewBl.getLeagueGwStandingsDownload(event, leagueid));
 	}
+
+	@GetMapping("/leaguegwrecord")
+	public String getLeagueGwRecord(@RequestParam("leagueid") Long leagueid, @RequestParam("event") Long event,
+			HttpServletResponse response, Model model) {
+
+		model.addAttribute("leagueid", leagueid);
+		model.addAttribute("event", event);
+
+		model.addAttribute("leagueGwRecordCopyText", dataViewBl.createLeagueGwRecordCopyText(leagueid, event));
+
+		return "leaguegwrecord";
+	}
 }

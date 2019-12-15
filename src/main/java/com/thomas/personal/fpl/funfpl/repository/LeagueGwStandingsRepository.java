@@ -1,8 +1,10 @@
 package com.thomas.personal.fpl.funfpl.repository;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
 import com.thomas.personal.fpl.funfpl.persistence.TblLeagueGwStandings;
@@ -62,5 +64,29 @@ public interface LeagueGwStandingsRepository extends CrudRepository<TblLeagueGwS
 	List<TblLeagueGwStandings> findByLeagueIdAndEventIdOrderByPlayerOverallStandingsOrderAsc(Long leagueId, Long event);
 
 	List<TblLeagueGwStandings> findByLeagueIdOrderByEventIdAsc(Long leagueid);
+
+	@Query("SELECT new map(L.playerEntryId AS playerEntryId, COUNT(L) AS dataCount) FROM TblLeagueGwStandings L "
+			+ "WHERE L.leagueId = ?2 AND L.eventId <= ?1 "
+			+ "AND L.playerGwStandingsRank = 1 "
+			+ "GROUP BY L.playerEntryId ")
+	List<Map<String, Object>> getTopScorerGwCount(Long event, Long leagueid);
+
+	@Query("SELECT new map(L.playerEntryId AS playerEntryId, COUNT(L) AS dataCount) FROM TblLeagueGwStandings L "
+			+ "WHERE L.leagueId = ?2 AND L.eventId <= ?1 "
+			+ "AND L.playerIsGwStandingsLastPos = true "
+			+ "GROUP BY L.playerEntryId ")
+	List<Map<String, Object>> getLowestScoreGwCount(Long event, Long leagueid);
+
+	@Query("SELECT L.eventId FROM TblLeagueGwStandings L "
+			+ "WHERE L.playerEntryId = ?1 AND L.leagueId = ?2 AND L.eventId <= ?3 "
+			+ "AND L.playerGwStandingsRank = ?4 ")
+	List<Long> getEventIdListByPlayerEntryIdAndLeagueIdAndMaxEventIdAndPlayerGwStandingsRank(Long playerEntryId, Long leagueid,
+			Long event, Integer playerGwStandingsRank);
+
+	@Query("SELECT L.eventId FROM TblLeagueGwStandings L "
+			+ "WHERE L.playerEntryId = ?1 AND L.leagueId = ?2 AND L.eventId <= ?3 "
+			+ "AND L.playerIsGwStandingsLastPos = ?4 ")
+	List<Long> getEventIdListByPlayerEntryIdAndLeagueIdAndMaxEventIdAndPlayerIsGwStandingsLastPos(Long id,
+			Long leagueid, Long event, Boolean playerIsGwStandingsLastPos);
 
 }

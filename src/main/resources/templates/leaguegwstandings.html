@@ -16,6 +16,10 @@
 	<p>
 		<a th:href="'/view/csv/leaguegwstandings?leagueid=' + ${leagueid} + '&event=' + ${event}" th:text="'Download CSV Data GW ' + ${event}"></a>
 	</p>
+	
+	<p>
+		<a th:href="'/view/leaguegwrecord?leagueid=' + ${leagueid} + '&event=' + ${event}" th:text="'See Record as of GW ' + ${event}"></a>
+	</p>
 
 	<script>
 		function copyResult(elementId) {

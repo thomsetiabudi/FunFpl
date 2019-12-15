@@ -1,0 +1,22 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>League GW Record</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+	<button onclick="copyResult('copyGwRecordTxt')" style="display:block;margin-bottom: 10px;">Copy GW Record</button>
+	
+	<textarea id="copyGwRecordTxt" rows="15" cols="100"><th:block th:text="${leagueGwRecordCopyText}"></th:block></textarea>
+
+	<script>
+		function copyResult(elementId) {
+			var copyResultTxt = document.getElementById(elementId);
+			copyResultTxt.value = copyResultTxt.value.trim();
+			copyResultTxt.select();
+			copyResultTxt.setSelectionRange(0, 99999)
+			document.execCommand("copy");
+		}
+	</script>
+</body>
+</html>

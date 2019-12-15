@@ -28,6 +28,8 @@ import com.thomas.personal.fpl.funfpl.repository.PlayerRepository;
 public class DataViewBl {
 
 	private static final String LINE_BREAK = "\r\n";
+	
+	private static final String DATA_COUNT_FIELD_NAME = "dataCount";
 
 	private PlayerRepository playerRepository;
 
@@ -936,6 +938,130 @@ public class DataViewBl {
 		}
 
 		return result;
+	}
+
+	public String createLeagueGwRecordCopyText(Long leagueid, Long event) {
+		Optional<TblLeague> league = leagueRepository.findById(leagueid);
+		
+		if(!league.isPresent()) {
+			return null;
+		}
+		
+		StringBuilder sb = new StringBuilder();
+
+		sb.append(league.get().getName());
+		sb.append("⚽🦁");
+		sb.append(LINE_BREAK);
+
+		sb.append("Rekor per *GW ");
+		sb.append(event);
+		sb.append("*");
+		sb.append(LINE_BREAK);
+		sb.append(LINE_BREAK);
+
+		sb.append("*Top Scorer GW Terbanyak:*");
+		sb.append(LINE_BREAK);
+		createTopScorerGwCountRankString(sb, event, leagueid);
+		sb.append(LINE_BREAK);
+		
+		sb.append("*Lowest Score GW Terbanyak:*");
+		sb.append(LINE_BREAK);
+		createLowestScorerGwCountRankString(sb, event, leagueid);
+		sb.append(LINE_BREAK);
+		
+		return sb.toString();
+	}
+
+	private void createLowestScorerGwCountRankString(StringBuilder sb, Long event, Long leagueid) {
+		List<Map<String, Object>> topScorerGwCountList = leagueGwStandingsRepository.getLowestScoreGwCount(event, leagueid);
+		
+		Long maxCount = 0L;
+		List<Map<String, Object>> topScorerList = new ArrayList<>();
+		
+		for (Map<String, Object> topScorerGwCount : topScorerGwCountList) {
+			if(((Long) topScorerGwCount.get(DATA_COUNT_FIELD_NAME)).compareTo(maxCount) > 0) {
+				maxCount = (Long) topScorerGwCount.get(DATA_COUNT_FIELD_NAME);
+				topScorerList = new ArrayList<>();
+				topScorerList.add(topScorerGwCount);
+			} else if(((Long) topScorerGwCount.get(DATA_COUNT_FIELD_NAME)).compareTo(maxCount) == 0) {
+				topScorerList.add(topScorerGwCount);
+			}
+		}
+		
+		Integer numbering = 0;
+		
+		for (Map<String, Object> topScorer : topScorerList) {
+			Optional<TblPlayer> player = playerRepository.findById((Long) topScorer.get("playerEntryId"));
+			if(!player.isPresent()) {
+				continue;
+			}
+			
+			numbering = numbering + 1;
+			
+			sb.append(numbering);
+			sb.append(". ");
+			sb.append(player.get().getPlayerNick());
+			sb.append(" ( *");
+			sb.append((Long) topScorer.get(DATA_COUNT_FIELD_NAME));
+			sb.append("* kali) ");
+			sb.append(LINE_BREAK);
+			sb.append("di GW: ");
+			List<Long> eventIdList = leagueGwStandingsRepository.getEventIdListByPlayerEntryIdAndLeagueIdAndMaxEventIdAndPlayerIsGwStandingsLastPos(player.get().getId(), leagueid, event, true);
+			for (int idx = 0; idx < eventIdList.size(); idx++) {
+				if(idx > 0) {
+					sb.append(", ");
+				}
+				
+				sb.append(eventIdList.get(idx));
+			}
+			sb.append(LINE_BREAK);
+		}
+	}
+
+	private void createTopScorerGwCountRankString(StringBuilder sb, Long event, Long leagueid) {
+		List<Map<String, Object>> topScorerGwCountList = leagueGwStandingsRepository.getTopScorerGwCount(event, leagueid);
+		
+		Long maxCount = 0L;
+		List<Map<String, Object>> topScorerList = new ArrayList<>();
+		
+		for (Map<String, Object> topScorerGwCount : topScorerGwCountList) {
+			if(((Long) topScorerGwCount.get(DATA_COUNT_FIELD_NAME)).compareTo(maxCount) > 0) {
+				maxCount = (Long) topScorerGwCount.get(DATA_COUNT_FIELD_NAME);
+				topScorerList = new ArrayList<>();
+				topScorerList.add(topScorerGwCount);
+			} else if(((Long) topScorerGwCount.get(DATA_COUNT_FIELD_NAME)).compareTo(maxCount) == 0) {
+				topScorerList.add(topScorerGwCount);
+			}
+		}
+		
+		Integer numbering = 0;
+		
+		for (Map<String, Object> topScorer : topScorerList) {
+			Optional<TblPlayer> player = playerRepository.findById((Long) topScorer.get("playerEntryId"));
+			if(!player.isPresent()) {
+				continue;
+			}
+			
+			numbering = numbering + 1;
+			
+			sb.append(numbering);
+			sb.append(". ");
+			sb.append(player.get().getPlayerNick());
+			sb.append(" ( *");
+			sb.append((Long) topScorer.get(DATA_COUNT_FIELD_NAME));
+			sb.append("* kali) ");
+			sb.append(LINE_BREAK);
+			sb.append("di GW: ");
+			List<Long> eventIdList = leagueGwStandingsRepository.getEventIdListByPlayerEntryIdAndLeagueIdAndMaxEventIdAndPlayerGwStandingsRank(player.get().getId(), leagueid, event, 1);
+			for (int idx = 0; idx < eventIdList.size(); idx++) {
+				if(idx > 0) {
+					sb.append(", ");
+				}
+				
+				sb.append(eventIdList.get(idx));
+			}
+			sb.append(LINE_BREAK);
+		}
 	}
 
 }
