@@ -57,12 +57,14 @@ public class DataBl {
 	private EventRepository eventRepository;
 
 	private LeagueGwStandingsRepository leagueGwStandingsRepository;
+	
+	private RestTemplate restTemplate;
 
 	@Autowired
 	public DataBl(PlayerRepository playerRepository, LeagueRepository leagueRepository,
 			LeaguePlayerRepository leaguePlayerRepository, PlayerEventRepository playerEventRepository,
 			EventRepository eventRepository, LeagueGwStandingsRepository leagueGwStandingsRepository,
-			@Value("${funfpl.site.cookievalue}") String cookieValue) {
+			@Value("${funfpl.site.cookievalue}") String cookieValue, RestTemplate restTemplate) {
 		this.playerRepository = playerRepository;
 		this.leagueRepository = leagueRepository;
 		this.leaguePlayerRepository = leaguePlayerRepository;
@@ -70,17 +72,18 @@ public class DataBl {
 		this.eventRepository = eventRepository;
 		this.leagueGwStandingsRepository = leagueGwStandingsRepository;
 		this.cookieValue = cookieValue;
+		this.restTemplate = restTemplate;
 	}
 
 	public void updateData() {
-		RestTemplate restTemplate = new RestTemplate();
+//		RestTemplate restTemplate = new RestTemplate();
 		HttpHeaders headers = new HttpHeaders();
 		headers.add(HTTP_HEADER_COOKIE, cookieValue);
 
 		String restUrl = "https://fantasy.premierleague.com/api/event-status/";
 
 		ResponseEntity<EventStatusResponseDto> response = null;
-
+		
 		try {
 			response = restTemplate.exchange(restUrl, HttpMethod.GET, new HttpEntity<String>(headers),
 					EventStatusResponseDto.class);
@@ -123,8 +126,8 @@ public class DataBl {
 		}
 
 		List<Long> leagueCodeList = new ArrayList<>();
-		leagueCodeList.add(965308L);
-		leagueCodeList.add(251905L);
+		leagueCodeList.add(393068L);
+		leagueCodeList.add(391524L);
 
 		for (Long leagueCode : leagueCodeList) {
 			Optional<TblLeague> leagueTable = leagueRepository.findById(leagueCode);
@@ -140,7 +143,7 @@ public class DataBl {
 		Iterable<TblLeague> leagueList = leagueRepository.findAll();
 
 		for (TblLeague tblLeague : leagueList) {
-			restTemplate = new RestTemplate();
+//			restTemplate = new RestTemplate();
 			headers = new HttpHeaders();
 			headers.add(HTTP_HEADER_COOKIE, cookieValue);
 
@@ -249,6 +252,7 @@ public class DataBl {
 	private void saveLeagueStandingsData() {
 		saveLeagueOverallStandingsData();
 		saveLeagueGwStandingsData();
+		saveLeagueGwRealStandingsData();
 
 		saveLeagueOverallBenchPointStandingsData();
 		saveLeagueGwBenchPointStandingsData();
@@ -1167,6 +1171,7 @@ public class DataBl {
 			leagueStandingsData.setLeagueId(leagueId);
 			leagueStandingsData.setPlayerEntryId(leagueSortingData.getPlayer().getId());
 			leagueStandingsData.setPlayerEventScore(leagueSortingData.getPlayerEvent().getPlayerEventScore());
+			leagueStandingsData.setPlayerEventScoreReal(leagueSortingData.getPlayerEvent().getPlayerEventScoreReal());
 			leagueStandingsData.setPlayerOverallStandingsOrder(index + 1);
 			leagueStandingsData.setPlayerTotalScore(leagueSortingData.getPlayerEvent().getPlayerTotalScore());
 			leagueStandingsData.setPlayerActiveChip(leagueSortingData.getPlayerEvent().getActiveChip());
@@ -1214,6 +1219,121 @@ public class DataBl {
 		}
 	}
 
+	private void saveLeagueGwRealStandingsData() {
+		List<TblEvent> unprocessedEventList = eventRepository.findByStatusOrderByEventAsc(EVENT_STATUS_UNPROCESSED);
+		for (TblEvent unprocessedEvent : unprocessedEventList) {
+			saveLeagueGwRealStandingsData(unprocessedEvent.getEvent());
+		}
+	}
+	
+	private void saveLeagueGwRealStandingsData(Long event) {
+		Iterable<TblLeague> leagueList = leagueRepository.findAll();
+
+		for (TblLeague tblLeague : leagueList) {
+			saveLeagueGwRealStandingsData(event, tblLeague.getId());
+		}
+	}
+	
+	private void saveLeagueGwRealStandingsData(Long event, Long leagueId) {
+		Optional<TblLeagueGwStandings> existingLeagueStandings = leagueGwStandingsRepository
+				.findFirstByEventIdAndLeagueIdOrderByLeagueIdAsc(event, leagueId);
+
+		if (existingLeagueStandings.isPresent() && existingLeagueStandings.get().getPlayerGwRealStandingsOrder() != null) {
+			return;
+		}
+
+		List<TblLeaguePlayer> leaguePlayerList = leaguePlayerRepository.findByLeagueId(leagueId);
+		List<LeagueStandingSortingDto> leagueSortingDataList = new ArrayList<>();
+
+		for (TblLeaguePlayer leaguePlayer : leaguePlayerList) {
+			TblPlayerEvent playerEventData = playerEventRepository.findByEventIdAndPlayerEntryId(event,
+					leaguePlayer.getPlayerEntryId());
+
+			Optional<TblPlayer> player = playerRepository.findById(playerEventData.getPlayerEntryId());
+
+			if (!player.isPresent()) {
+				return;
+			}
+
+			LeagueStandingSortingDto leagueSortingData = new LeagueStandingSortingDto();
+			leagueSortingData.setPlayer(player.get());
+			leagueSortingData.setPlayerEvent(playerEventData);
+			leagueSortingDataList.add(leagueSortingData);
+		}
+
+		Collections.sort(leagueSortingDataList, new GwRealStandingsSorter());
+
+		Integer gwStandingsRank = 1;
+		Long prevEventScore = null;
+		for (Integer index = 0; index < leagueSortingDataList.size(); index++) {
+			LeagueStandingSortingDto leagueSortingData = leagueSortingDataList.get(index);
+			TblLeagueGwStandings leagueStandingsData = leagueGwStandingsRepository
+					.findByLeagueIdAndEventIdAndPlayerEntryId(leagueId, event, leagueSortingData.getPlayer().getId());
+
+			leagueStandingsData.setPlayerGwRealStandingsOrder(index + 1);
+
+			if (index.equals(0)) {
+				leagueStandingsData.setPlayerGwRealStandingsRank(gwStandingsRank);
+				prevEventScore = leagueSortingData.getPlayerEvent().getPlayerEventScoreReal();
+			} else {
+				if (prevEventScore.equals(leagueSortingData.getPlayerEvent().getPlayerEventScoreReal())) {
+					leagueStandingsData.setPlayerGwRealStandingsRank(gwStandingsRank);
+				} else {
+					gwStandingsRank = gwStandingsRank + 1;
+					leagueStandingsData.setPlayerGwRealStandingsRank(gwStandingsRank);
+					prevEventScore = leagueSortingData.getPlayerEvent().getPlayerEventScoreReal();
+				}
+			}
+
+			if (event.equals(1L)) {
+				leagueStandingsData.setPlayerPrevGwRealStandingsOrder(0);
+				leagueStandingsData.setPlayerGwRealStandingsPositionGain(0);
+				leagueStandingsData.setPlayerPrevGwRealStandingsRank(0);
+				leagueStandingsData.setPlayerGwRealStandingsRankPositionGain(0);
+			} else {
+				TblLeagueGwStandings prevLeagueGwStandingData = leagueGwStandingsRepository
+						.findByLeagueIdAndEventIdAndPlayerEntryId(leagueId, event - 1L,
+								leagueStandingsData.getPlayerEntryId());
+
+				leagueStandingsData.setPlayerPrevGwRealStandingsOrder(prevLeagueGwStandingData.getPlayerGwRealStandingsOrder());
+				leagueStandingsData.setPlayerGwRealStandingsPositionGain(leagueStandingsData.getPlayerPrevGwRealStandingsOrder()
+						- leagueStandingsData.getPlayerGwRealStandingsOrder());
+				leagueStandingsData.setPlayerPrevGwRealStandingsRank(prevLeagueGwStandingData.getPlayerGwRealStandingsRank());
+				leagueStandingsData
+						.setPlayerGwRealStandingsRankPositionGain(prevLeagueGwStandingData.getPlayerGwRealStandingsRank()
+								- leagueStandingsData.getPlayerGwRealStandingsRank());
+			}
+
+			leagueGwStandingsRepository.save(leagueStandingsData);
+		}
+
+		Long minEventScore = null;
+		for (Integer index = leagueSortingDataList.size() - 1; index >= 0; index--) {
+			LeagueStandingSortingDto leagueSortingData = leagueSortingDataList.get(index);
+
+			if (!(leagueSortingData.getPlayerEvent().getBank().equals(1000L)
+					&& leagueSortingData.getPlayerEvent().getPlayerTotalScore().equals(0L))) {
+				TblLeagueGwStandings leagueStandingsData = leagueGwStandingsRepository
+						.findByLeagueIdAndEventIdAndPlayerEntryId(leagueId, event,
+								leagueSortingData.getPlayer().getId());
+
+				if (minEventScore == null) {
+					minEventScore = leagueStandingsData.getPlayerEventScoreReal();
+					leagueStandingsData.setPlayerIsGwRealStandingsLastPos(true);
+					leagueGwStandingsRepository.save(leagueStandingsData);
+				} else {
+					if (leagueStandingsData.getPlayerEventScore().equals(minEventScore)) {
+						leagueStandingsData.setPlayerIsGwRealStandingsLastPos(true);
+						leagueGwStandingsRepository.save(leagueStandingsData);
+					} else {
+						break;
+					}
+				}
+			}
+		}
+	}
+	
+	
 	private void saveLeagueGwStandingsData() {
 		List<TblEvent> unprocessedEventList = eventRepository.findByStatusOrderByEventAsc(EVENT_STATUS_UNPROCESSED);
 		for (TblEvent unprocessedEvent : unprocessedEventList) {
@@ -1347,7 +1467,6 @@ public class DataBl {
 	}
 
 	private void getPlayerEventData(TblPlayer playerData, Long currentEventId) {
-		RestTemplate restTemplate = new RestTemplate();
 		HttpHeaders headers = new HttpHeaders();
 		headers.add(HTTP_HEADER_COOKIE, cookieValue);
 
@@ -1376,6 +1495,7 @@ public class DataBl {
 		playerEventData.setEventId(currentEventId);
 		playerEventData.setPlayerEntryId(playerData.getId());
 		playerEventData.setPlayerEventScore(history.getPoints());
+		playerEventData.setPlayerEventScoreReal(history.getPoints() - history.getEventTransfersCost());
 		playerEventData.setPlayerTotalScore(history.getTotalPoints());
 		playerEventData.setPointsOnBench(history.getPointsOnBench());
 		playerEventData.setTransfer(history.getEventTransfers());
@@ -1403,6 +1523,10 @@ public class DataBl {
 						prevPlayerEvent.get().getTotalTransferCost() + playerEventData.getTransferCost());
 			}
 		}
+		
+		if(playerEventData.getPlayerEventScoreReal() == null) {
+			playerEventData.setPlayerEventScoreReal(0L);
+		}
 
 		playerEventRepository.save(playerEventData);
 	}
@@ -1414,6 +1538,7 @@ public class DataBl {
 		playerEventData.setEventId(currentEventId);
 		playerEventData.setPlayerEntryId(playerData.getId());
 		playerEventData.setPlayerEventScore(0L);
+		playerEventData.setPlayerEventScoreReal(0L);
 		playerEventData.setPlayerTotalScore(0L);
 		playerEventData.setPointsOnBench(0L);
 		playerEventData.setTransfer(0L);
@@ -1440,6 +1565,23 @@ class OverallStandingsSorter implements Comparator<LeagueStandingSortingDto> {
 		}
 
 		return b.getPlayerEvent().getPlayerTotalScore().compareTo(a.getPlayerEvent().getPlayerTotalScore());
+	}
+}
+
+class GwRealStandingsSorter implements Comparator<LeagueStandingSortingDto> {
+	public int compare(LeagueStandingSortingDto a, LeagueStandingSortingDto b) {
+
+		if (b.getPlayerEvent().getPlayerEventScoreReal().compareTo(a.getPlayerEvent().getPlayerEventScoreReal()) == 0) {
+			if (b.getPlayerEvent().getPlayerTotalScore().compareTo(a.getPlayerEvent().getPlayerTotalScore()) == 0) {
+				if (b.getPlayer().getPlayerName().compareToIgnoreCase(a.getPlayer().getPlayerName()) == 0) {
+					return b.getPlayer().getId().compareTo(a.getPlayer().getId());
+				}
+				return b.getPlayer().getPlayerName().compareToIgnoreCase(a.getPlayer().getPlayerName());
+			}
+			return b.getPlayerEvent().getPlayerTotalScore().compareTo(a.getPlayerEvent().getPlayerTotalScore());
+		}
+
+		return b.getPlayerEvent().getPlayerEventScoreReal().compareTo(a.getPlayerEvent().getPlayerEventScoreReal());
 	}
 }
 

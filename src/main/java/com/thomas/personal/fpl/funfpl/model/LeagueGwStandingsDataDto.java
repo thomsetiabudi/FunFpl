@@ -16,6 +16,10 @@ public class LeagueGwStandingsDataDto {
 	
 	private Long playerEventScore;
 	
+	private Long playerEventScoreReal;
+	
+	private Long playerEventTransferCost;
+	
 	private Long playerTotalScore;
 	
 	private Integer playerStandingsOrder;
@@ -31,6 +35,20 @@ public class LeagueGwStandingsDataDto {
 	private Integer playerRankGain;
 	
 	private Boolean playerIsLastGwStandingsRank;
+	
+	private Integer playerStandingsOrderReal;
+	
+	private Integer playerPrevStandingsOrderReal;
+	
+	private Integer playerPositionGainReal;
+	
+	private Integer playerStandingsRankReal;
+	
+	private Integer playerPrevStandingsRankReal;
+	
+	private Integer playerRankGainReal;
+	
+	private Boolean playerIsLastGwStandingsRankReal;
 	
 	private String activeChip;
 
@@ -160,6 +178,78 @@ public class LeagueGwStandingsDataDto {
 
 	public void setActiveChip(String activeChip) {
 		this.activeChip = activeChip;
+	}
+
+	public Long getPlayerEventScoreReal() {
+		return playerEventScoreReal;
+	}
+
+	public void setPlayerEventScoreReal(Long playerEventScoreReal) {
+		this.playerEventScoreReal = playerEventScoreReal;
+	}
+
+	public Integer getPlayerStandingsOrderReal() {
+		return playerStandingsOrderReal;
+	}
+
+	public void setPlayerStandingsOrderReal(Integer playerStandingsOrderReal) {
+		this.playerStandingsOrderReal = playerStandingsOrderReal;
+	}
+
+	public Integer getPlayerPrevStandingsOrderReal() {
+		return playerPrevStandingsOrderReal;
+	}
+
+	public void setPlayerPrevStandingsOrderReal(Integer playerPrevStandingsOrderReal) {
+		this.playerPrevStandingsOrderReal = playerPrevStandingsOrderReal;
+	}
+
+	public Integer getPlayerPositionGainReal() {
+		return playerPositionGainReal;
+	}
+
+	public void setPlayerPositionGainReal(Integer playerPositionGainReal) {
+		this.playerPositionGainReal = playerPositionGainReal;
+	}
+
+	public Integer getPlayerStandingsRankReal() {
+		return playerStandingsRankReal;
+	}
+
+	public void setPlayerStandingsRankReal(Integer playerStandingsRankReal) {
+		this.playerStandingsRankReal = playerStandingsRankReal;
+	}
+
+	public Integer getPlayerPrevStandingsRankReal() {
+		return playerPrevStandingsRankReal;
+	}
+
+	public void setPlayerPrevStandingsRankReal(Integer playerPrevStandingsRankReal) {
+		this.playerPrevStandingsRankReal = playerPrevStandingsRankReal;
+	}
+
+	public Integer getPlayerRankGainReal() {
+		return playerRankGainReal;
+	}
+
+	public void setPlayerRankGainReal(Integer playerRankGainReal) {
+		this.playerRankGainReal = playerRankGainReal;
+	}
+
+	public Boolean getPlayerIsLastGwStandingsRankReal() {
+		return playerIsLastGwStandingsRankReal;
+	}
+
+	public void setPlayerIsLastGwStandingsRankReal(Boolean playerIsLastGwStandingsRankReal) {
+		this.playerIsLastGwStandingsRankReal = playerIsLastGwStandingsRankReal;
+	}
+
+	public Long getPlayerEventTransferCost() {
+		return playerEventTransferCost;
+	}
+
+	public void setPlayerEventTransferCost(Long playerEventTransferCost) {
+		this.playerEventTransferCost = playerEventTransferCost;
 	}	
 	
 }

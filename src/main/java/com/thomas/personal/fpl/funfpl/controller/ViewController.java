@@ -80,8 +80,12 @@ public class ViewController {
 		model.addAttribute("leagueName", leagueStandingsData.get(0).getLeagueName());
 		model.addAttribute("leagueGwPointRankCopyText",
 				dataViewBl.createLeagueGwPointRankCopyText(leagueStandingsData, event));
+		model.addAttribute("leagueGwRealPointRankCopyText",
+				dataViewBl.createLeagueGwRealPointRankCopyText(leagueStandingsData, event, leagueid));
 		model.addAttribute("leagueGwSummaryCopyText",
 				dataViewBl.createLeagueGwSummaryCopyText(leagueStandingsData, event, leagueid));
+		model.addAttribute("leagueGwRealSummaryCopyText",
+				dataViewBl.createLeagueGwRealSummaryCopyText(leagueStandingsData, event, leagueid));
 		model.addAttribute("leagueLeaguePointRankCopyText",
 				dataViewBl.createLeagueLeaguePointRankCopyText(event, leagueid));
 

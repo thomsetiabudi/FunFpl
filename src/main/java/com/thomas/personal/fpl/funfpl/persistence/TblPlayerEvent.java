@@ -22,6 +22,8 @@ public class TblPlayerEvent {
 	
 	private Long playerTotalScore;
 	
+	private Long playerEventScoreReal;
+	
 	private String activeChip;
 	
 	private Long bank;
@@ -154,6 +156,14 @@ public class TblPlayerEvent {
 
 	public void setTotalPointsOnBench(Long totalPointsOnBench) {
 		this.totalPointsOnBench = totalPointsOnBench;
+	}
+
+	public Long getPlayerEventScoreReal() {
+		return playerEventScoreReal;
+	}
+
+	public void setPlayerEventScoreReal(Long playerEventScoreReal) {
+		this.playerEventScoreReal = playerEventScoreReal;
 	}
 
 }

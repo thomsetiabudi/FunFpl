@@ -21,14 +21,23 @@ public interface LeagueGwStandingsRepository extends CrudRepository<TblLeagueGwS
 
 	List<TblLeagueGwStandings> findByLeagueIdAndEventIdAndPlayerGwStandingsRankOrderByPlayerGwStandingsOrderAsc(
 			Long leagueid, Long event, int standingsRank);
+	
+	List<TblLeagueGwStandings> findByLeagueIdAndEventIdAndPlayerGwRealStandingsRankOrderByPlayerGwRealStandingsOrderAsc(
+			Long leagueid, Long event, int standingsRank);
 
 	List<TblLeagueGwStandings> findByLeagueIdAndEventIdAndPlayerIsGwStandingsLastPosOrderByPlayerGwStandingsOrderDesc(
 			Long leagueid, Long event, boolean playerIsGwStandingsLastPos);
+	
+	List<TblLeagueGwStandings> findByLeagueIdAndEventIdAndPlayerIsGwRealStandingsLastPosOrderByPlayerGwRealStandingsOrderDesc(
+			Long leagueid, Long event, boolean playerIsGwRealStandingsLastPos);
 
 	List<TblLeagueGwStandings> findTop2ByLeagueIdAndEventIdOrderByPlayerOverallStandingsOrderAsc(Long leagueid,
 			Long event);
 
 	List<TblLeagueGwStandings> findTop3ByLeagueIdAndEventIdOrderByPlayerGwStandingsRankPositionGainDesc(Long leagueid,
+			Long event);
+	
+	List<TblLeagueGwStandings> findTop3ByLeagueIdAndEventIdOrderByPlayerGwRealStandingsRankPositionGainDesc(Long leagueid,
 			Long event);
 
 	List<TblLeagueGwStandings> findTop3ByLeagueIdAndEventIdOrderByPlayerOverallStandingsPositionGainDesc(Long leagueid,
@@ -90,5 +99,7 @@ public interface LeagueGwStandingsRepository extends CrudRepository<TblLeagueGwS
 			+ "ORDER BY L.eventId ")
 	List<Long> getEventIdListByPlayerEntryIdAndLeagueIdAndMaxEventIdAndPlayerIsGwStandingsLastPos(Long id,
 			Long leagueid, Long event, Boolean playerIsGwStandingsLastPos);
+
+	List<TblLeagueGwStandings> findByLeagueIdAndEventIdOrderByPlayerGwRealStandingsOrderAsc(Long leagueId, Long event);
 
 }

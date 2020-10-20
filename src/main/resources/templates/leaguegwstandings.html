@@ -9,9 +9,14 @@
 	<button onclick="copyResult('copyGwStandingsTxt')" style="display:block;margin-bottom: 10px;">Copy GW Standings</button>
 	<button onclick="copyResult('copyLeagueStandingsTxt')" style="display:block;margin-bottom: 10px;">Copy League Standings</button>
 	
+	<button onclick="copyResult('copyGwRealSummaryTxt')" style="display:block;margin-bottom: 10px;">Copy GW Real Summary</button>
+	<button onclick="copyResult('copyGwRealStandingsTxt')" style="display:block;margin-bottom: 10px;">Copy GW Real Standings</button>
+	
 	<textarea id="copyGwSummaryTxt" rows="15" cols="100"><th:block th:text="${leagueGwSummaryCopyText}"></th:block></textarea>
 	<textarea id="copyGwStandingsTxt" rows="15" cols="100"><th:block th:text="${leagueGwPointRankCopyText}"></th:block></textarea>
 	<textarea id="copyLeagueStandingsTxt" rows="15" cols="100"><th:block th:text="${leagueLeaguePointRankCopyText}"></th:block></textarea>
+	<textarea id="copyGwRealSummaryTxt" rows="15" cols="100"><th:block th:text="${leagueGwRealSummaryCopyText}"></th:block></textarea>
+	<textarea id="copyGwRealStandingsTxt" rows="15" cols="100"><th:block th:text="${leagueGwRealPointRankCopyText}"></th:block></textarea>
 
 	<p>
 		<a th:href="'/view/csv/leaguegwstandings?leagueid=' + ${leagueid} + '&event=' + ${event}" th:text="'Download CSV Data GW ' + ${event}"></a>
