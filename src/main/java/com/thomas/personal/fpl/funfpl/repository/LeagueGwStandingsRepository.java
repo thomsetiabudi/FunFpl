@@ -102,4 +102,7 @@ public interface LeagueGwStandingsRepository extends CrudRepository<TblLeagueGwS
 
 	List<TblLeagueGwStandings> findByLeagueIdAndEventIdOrderByPlayerGwRealStandingsOrderAsc(Long leagueId, Long event);
 
+	List<TblLeagueGwStandings> findTop3ByLeagueIdAndEventIdOrderByPlayerGwBenchPointStandingsOrderAsc(Long leagueid,
+			Long event);
+
 }

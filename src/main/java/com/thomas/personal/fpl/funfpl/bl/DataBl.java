@@ -6,6 +6,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
+import javax.transaction.Transactional;
+
 import org.apache.commons.text.WordUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -75,6 +77,7 @@ public class DataBl {
 		this.restTemplate = restTemplate;
 	}
 
+	@Transactional
 	public void updateData() {
 //		RestTemplate restTemplate = new RestTemplate();
 		HttpHeaders headers = new HttpHeaders();
@@ -1527,8 +1530,13 @@ public class DataBl {
 		if(playerEventData.getPlayerEventScoreReal() == null) {
 			playerEventData.setPlayerEventScoreReal(0L);
 		}
-
-		playerEventRepository.save(playerEventData);
+		
+		TblPlayerEvent existingPlayerEventData = playerEventRepository.findByEventIdAndPlayerEntryId(currentEventId,
+				playerData.getId());
+		
+		if(existingPlayerEventData == null) {
+			playerEventRepository.save(playerEventData);
+		}
 	}
 
 	private void createEmptyPlayerEventData(TblPlayer playerData, Long currentEventId) {
@@ -1547,7 +1555,13 @@ public class DataBl {
 		playerEventData.setTotalTransferCost(0L);
 		playerEventData.setValue(1000L);
 		playerEventData.setTotalPointsOnBench(0L);
-		playerEventRepository.save(playerEventData);
+		
+		TblPlayerEvent existingPlayerEventData = playerEventRepository.findByEventIdAndPlayerEntryId(currentEventId,
+				playerData.getId());
+		
+		if(existingPlayerEventData == null) {
+			playerEventRepository.save(playerEventData);
+		}
 	}
 }
 

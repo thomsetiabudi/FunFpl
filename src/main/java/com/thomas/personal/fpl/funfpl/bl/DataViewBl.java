@@ -610,8 +610,8 @@ public class DataViewBl {
 	private void createMostPointOnBenchGwString(StringBuilder sb, Map<Long, TblPlayer> playerMap, Long event,
 			Long leagueid) {
 		List<TblLeagueGwStandings> standings = leagueGwStandingsRepository
-				.findByLeagueIdAndEventIdAndPlayerGwBenchPointStandingsRankOrderByPlayerGwBenchPointStandingsOrderAsc(
-						leagueid, event, 1);
+				.findTop3ByLeagueIdAndEventIdOrderByPlayerGwBenchPointStandingsOrderAsc(
+						leagueid, event);
 
 		if (!standings.isEmpty()) {
 			for (TblLeagueGwStandings data : standings) {
