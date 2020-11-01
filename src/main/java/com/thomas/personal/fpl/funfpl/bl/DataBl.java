@@ -1,12 +1,14 @@
 package com.thomas.personal.fpl.funfpl.bl;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-
-import javax.transaction.Transactional;
 
 import org.apache.commons.text.WordUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
@@ -32,12 +35,14 @@ import com.thomas.personal.fpl.funfpl.persistence.TblLeagueGwStandings;
 import com.thomas.personal.fpl.funfpl.persistence.TblLeaguePlayer;
 import com.thomas.personal.fpl.funfpl.persistence.TblPlayer;
 import com.thomas.personal.fpl.funfpl.persistence.TblPlayerEvent;
+import com.thomas.personal.fpl.funfpl.persistence.TblProcess;
 import com.thomas.personal.fpl.funfpl.repository.EventRepository;
 import com.thomas.personal.fpl.funfpl.repository.LeagueGwStandingsRepository;
 import com.thomas.personal.fpl.funfpl.repository.LeaguePlayerRepository;
 import com.thomas.personal.fpl.funfpl.repository.LeagueRepository;
 import com.thomas.personal.fpl.funfpl.repository.PlayerEventRepository;
 import com.thomas.personal.fpl.funfpl.repository.PlayerRepository;
+import com.thomas.personal.fpl.funfpl.repository.ProcessRepository;
 
 @Component
 public class DataBl {
@@ -60,13 +65,22 @@ public class DataBl {
 
 	private LeagueGwStandingsRepository leagueGwStandingsRepository;
 	
+	private ProcessRepository processRepository;
+	
 	private RestTemplate restTemplate;
+	
+	private List<Long> leagueCodeList;
+	
+	private Map<String, String> nickNameMap;
 
 	@Autowired
 	public DataBl(PlayerRepository playerRepository, LeagueRepository leagueRepository,
 			LeaguePlayerRepository leaguePlayerRepository, PlayerEventRepository playerEventRepository,
 			EventRepository eventRepository, LeagueGwStandingsRepository leagueGwStandingsRepository,
-			@Value("${funfpl.site.cookievalue}") String cookieValue, RestTemplate restTemplate) {
+			@Value("${funfpl.site.cookievalue}") String cookieValue, RestTemplate restTemplate,
+			@Value("${funfpl.leagueid.list}") String leagueIdListString,
+			@Value("${funfpl.player.nicknamemap.list}") String nickNameMapListString,
+			ProcessRepository processRepository) {
 		this.playerRepository = playerRepository;
 		this.leagueRepository = leagueRepository;
 		this.leaguePlayerRepository = leaguePlayerRepository;
@@ -75,11 +89,47 @@ public class DataBl {
 		this.leagueGwStandingsRepository = leagueGwStandingsRepository;
 		this.cookieValue = cookieValue;
 		this.restTemplate = restTemplate;
+		this.leagueCodeList = new ArrayList<>();
+		if(leagueIdListString != null) {
+			for (String leagueIdString : leagueIdListString.split(",")) {
+				leagueCodeList.add(Long.valueOf(leagueIdString));
+			}
+		}
+		
+		this.nickNameMap = new HashMap<>();
+		if(nickNameMapListString != null) {
+			for (String nickNameMapValue : nickNameMapListString.split(",")) {
+				if(nickNameMapValue != null && !"".equalsIgnoreCase(nickNameMapValue) && nickNameMapValue.contains(";")) {
+					String[] nickNameMapArr = nickNameMapValue.split(";");
+					this.nickNameMap.put(nickNameMapArr[0], nickNameMapArr[1]);
+				}
+			}
+		}
+		
+		this.processRepository = processRepository;
+		
+		Optional<TblProcess> processRowCheck = processRepository.findById(1L);
+		
+		if(!processRowCheck.isPresent()) {
+			TblProcess processRow = new TblProcess();
+			processRow.setProcessId(1L);
+			processRow.setLastProcess(new Timestamp(new Date().getTime()));
+			processRepository.save(processRow);
+		}
 	}
 
 	@Transactional
 	public void updateData() {
-//		RestTemplate restTemplate = new RestTemplate();
+		
+		Optional<TblProcess> processRowCheck = processRepository.findById(1L);
+		if(!processRowCheck.isPresent()) {
+			return;
+		} else {
+			TblProcess processRow = processRowCheck.get();
+			processRow.setLastProcess(new Timestamp(new Date().getTime()));
+			processRepository.save(processRow);
+		}
+
 		HttpHeaders headers = new HttpHeaders();
 		headers.add(HTTP_HEADER_COOKIE, cookieValue);
 
@@ -128,10 +178,6 @@ public class DataBl {
 			}
 		}
 
-		List<Long> leagueCodeList = new ArrayList<>();
-		leagueCodeList.add(393068L);
-		leagueCodeList.add(391524L);
-
 		for (Long leagueCode : leagueCodeList) {
 			Optional<TblLeague> leagueTable = leagueRepository.findById(leagueCode);
 
@@ -146,7 +192,7 @@ public class DataBl {
 		Iterable<TblLeague> leagueList = leagueRepository.findAll();
 
 		for (TblLeague tblLeague : leagueList) {
-//			restTemplate = new RestTemplate();
+
 			headers = new HttpHeaders();
 			headers.add(HTTP_HEADER_COOKIE, cookieValue);
 
@@ -208,25 +254,9 @@ public class DataBl {
 				if (playerNickName.indexOf(' ') != -1) {
 					playerNickName = playerNickName.substring(0, playerNickName.indexOf(' '));
 				}
-
-				if ("Daniel Talenta".equalsIgnoreCase(playerName)) {
-					playerNickName = "Dante";
-				} else if (playerName.contains("Dioalip")) {
-					playerNickName = "Dio";
-				} else if (playerName.contains("Albertus Reinaldi")) {
-					playerNickName = "Rei";
-				} else if (playerName.contains("Firdaus Dwi Avianto")) {
-					playerNickName = "Anto";
-				} else if (playerName.contains("Yoseph Andhi Wicaksono")) {
-					playerNickName = "Andhi";
-				} else if (playerName.contains("Yeremia Valentino")) {
-					playerNickName = "Valen";
-				} else if (playerName.contains("Samuel Eko Yulianto")) {
-					playerNickName = "Samuel Eko";
-				} else if (playerName.contains("Lucas Ega Krisetya")) {
-					playerNickName = "Ega";
-				} else if (playerName.contains("Nugraha Chandra")) {
-					playerNickName = "Chandra";
+				
+				if(nickNameMap.containsKey(playerName)) {
+					playerNickName = nickNameMap.get(playerName);
 				}
 
 				tblPlayer.setPlayerNick(playerNickName);
