@@ -296,6 +296,7 @@ public class DataViewBl {
 
 			sb.append(")");
 			
+			// comment out for this season
 //			if(index == 0) {
 //				sb.append(" tabungan donasi 35rb");
 //			} else if(index == 1) {
