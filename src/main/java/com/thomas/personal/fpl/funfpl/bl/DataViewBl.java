@@ -296,21 +296,21 @@ public class DataViewBl {
 
 			sb.append(")");
 			
-			if(index == 0) {
-				sb.append(" tabungan donasi 35rb");
-			} else if(index == 1) {
-				sb.append(" tabungan donasi 15rb");
-			} else if (index == leagueStandingsData.size() - 1) {
-				sb.append(" donasi 15rb");
-			} else if (index == leagueStandingsData.size() - 2) {
-				sb.append(" donasi 15rb");
-			} else if (index == leagueStandingsData.size() - 3) {
-				sb.append(" donasi 10rb");
-			} else if (index == leagueStandingsData.size() - 4) {
-				sb.append(" donasi 5rb");
-			} else if (index == leagueStandingsData.size() - 5) {
-				sb.append(" donasi 5rb");
-			}
+//			if(index == 0) {
+//				sb.append(" tabungan donasi 35rb");
+//			} else if(index == 1) {
+//				sb.append(" tabungan donasi 15rb");
+//			} else if (index == leagueStandingsData.size() - 1) {
+//				sb.append(" donasi 15rb");
+//			} else if (index == leagueStandingsData.size() - 2) {
+//				sb.append(" donasi 15rb");
+//			} else if (index == leagueStandingsData.size() - 3) {
+//				sb.append(" donasi 10rb");
+//			} else if (index == leagueStandingsData.size() - 4) {
+//				sb.append(" donasi 5rb");
+//			} else if (index == leagueStandingsData.size() - 5) {
+//				sb.append(" donasi 5rb");
+//			}
 			
 			sb.append(LINE_BREAK);
 		}
