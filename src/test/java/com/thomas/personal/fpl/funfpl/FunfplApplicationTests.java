@@ -11,6 +11,14 @@ public class FunfplApplicationTests {
 
 	@Test
 	public void contextLoads() {
+		/* mapOption: L.MapOptions = {
+        center: L.latLng(-2.548926, 118.0148634),
+        zoom: 5,
+        maxZoom: this.mapOptionDefaultMapMaxZoom,
+        minZoom: this.mapOptionDefaultMapMinZoom,
+        zoomControl: false,
+        preferCanvas: true
+    }*/
 	}
 
 }
