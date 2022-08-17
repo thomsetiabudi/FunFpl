@@ -33,12 +33,12 @@ abstract contract ContextMixin {
 }
 
 contract DFPL is ERC1155, Ownable, ContextMixin {
-    string private _contractUri = "https://bafybeidzn7ac2tkyu5xri6l2md5qwtaqo2gsqh3qrvrmxqdwnzqxbc5gnm.ipfs.nftstorage.link/AFPL.json";
-    string private _baseTokenUri = "https://bafybeidzn7ac2tkyu5xri6l2md5qwtaqo2gsqh3qrvrmxqdwnzqxbc5gnm.ipfs.nftstorage.link/AFPL";
+    string private _contractUri = "https://bafybeifp4bf2u4ykf5uuky3cuf67zrdkcwtybuw74f3wsbcdi645ey45au.ipfs.nftstorage.link/DFPL.json";
+    string private _baseTokenUri = "https://bafybeifp4bf2u4ykf5uuky3cuf67zrdkcwtybuw74f3wsbcdi645ey45au.ipfs.nftstorage.link/DFPL";
 
     event PermanentURI(string _value, uint256 indexed _id);
 
-    constructor() ERC1155("https://bafybeidzn7ac2tkyu5xri6l2md5qwtaqo2gsqh3qrvrmxqdwnzqxbc5gnm.ipfs.nftstorage.link/AFPL{id}.json") {
+    constructor() ERC1155("https://bafybeifp4bf2u4ykf5uuky3cuf67zrdkcwtybuw74f3wsbcdi645ey45au.ipfs.nftstorage.link/DFPL{id}.json") {
         _mint(msg.sender, 0, 10**18, "");
         for(uint256 gw = 1; gw <= 38; gw++) {
             _mint(msg.sender, gw, 1, "");
