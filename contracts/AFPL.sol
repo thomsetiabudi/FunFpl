@@ -31,7 +31,7 @@ abstract contract ContextMixin {
         return sender;
     }
 }
-
+// Deployed Address 0x9E7423113f6345778081435927bbbFbdc9b2Bf37
 contract AFPL is ERC1155, Ownable, ContextMixin {
     string private _contractUri = "https://bafybeidzn7ac2tkyu5xri6l2md5qwtaqo2gsqh3qrvrmxqdwnzqxbc5gnm.ipfs.nftstorage.link/AFPL.json";
     string private _baseTokenUri = "https://bafybeidzn7ac2tkyu5xri6l2md5qwtaqo2gsqh3qrvrmxqdwnzqxbc5gnm.ipfs.nftstorage.link/AFPL";
