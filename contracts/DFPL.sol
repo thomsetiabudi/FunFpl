@@ -31,7 +31,7 @@ abstract contract ContextMixin {
         return sender;
     }
 }
-
+// Deployed Address 0x2f4fd05c7B1e85a43177f94926299146A305be4a
 contract DFPL is ERC1155, Ownable, ContextMixin {
     string private _contractUri = "https://bafybeifp4bf2u4ykf5uuky3cuf67zrdkcwtybuw74f3wsbcdi645ey45au.ipfs.nftstorage.link/DFPL.json";
     string private _baseTokenUri = "https://bafybeifp4bf2u4ykf5uuky3cuf67zrdkcwtybuw74f3wsbcdi645ey45au.ipfs.nftstorage.link/DFPL";
